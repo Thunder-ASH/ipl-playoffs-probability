@@ -1,10 +1,14 @@
-import streamlit as st
-import pandas as pd
-import sys, os
+import sys
+import os
+
+# MUST come before import
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from sim.simulator import run_simulations
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+import pandas as pd
+import streamlit as st
+
 st.set_page_config(layout="wide")
 
 # ---------- GLOBAL STYLE ----------
