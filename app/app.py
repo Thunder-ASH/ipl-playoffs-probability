@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import sys, os
 
-sys.path.append(os.path.abspath(".."))
 from sim.simulator import run_simulations
 
 st.set_page_config(layout="wide")
