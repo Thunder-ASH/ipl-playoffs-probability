@@ -4,7 +4,7 @@ import sys, os
 
 from sim.simulator import run_simulations
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../sim")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 st.set_page_config(layout="wide")
 
 # ---------- GLOBAL STYLE ----------
