@@ -83,7 +83,7 @@ div[data-testid="column"] {
 # ---------- TITLE ----------
 st.title("PLAYOFF PROBABILITY")
 st.markdown(
-    "<div class='small' style='margin-bottom:6px;'>As of Apr 27</div>",
+    "<div class='small' style='margin-bottom:6px;'>As of Apr 28 (RCB v DC)</div>",
     unsafe_allow_html=True
 )
 
