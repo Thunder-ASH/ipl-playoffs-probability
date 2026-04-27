@@ -1,0 +1,12 @@
+{
+  "PBKS": { "points": 13, "nrr": 1.33, "played": 7, "won": 6, "lost": 1 },
+  "RCB":  { "points": 10, "nrr": 1.10, "played": 7, "won": 5, "lost": 2 },
+  "SRH":  { "points": 10, "nrr": 0.82, "played": 8, "won": 5, "lost": 3 },
+  "RR":   { "points": 10, "nrr": 0.60, "played": 8, "won": 5, "lost": 3 },
+  "GT":   { "points": 8,  "nrr": -0.48, "played": 8, "won": 4, "lost": 4 },
+  "CSK":  { "points": 6,  "nrr": -0.12, "played": 8, "won": 3, "lost": 5 },
+  "DC":   { "points": 6,  "nrr": -0.18, "played": 7, "won": 3, "lost": 4 },
+  "KKR":  { "points": 5,  "nrr": -0.75, "played": 8, "won": 2, "lost": 5 },
+  "MI":   { "points": 4,  "nrr": -0.74, "played": 7, "won": 2, "lost": 5 },
+  "LSG":  { "points": 4,  "nrr": -1.11, "played": 8, "won": 2, "lost": 6 }
+}
