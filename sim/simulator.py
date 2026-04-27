@@ -3,7 +3,7 @@ import random
 import os
 
 # ---------- CONFIG ----------
-SIMULATIONS = 70000
+SIMULATIONS = 100000
 NR_PROBABILITY = 0.06   # 6% chance of no result
 
 BASE_ELO = {
