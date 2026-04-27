@@ -46,7 +46,7 @@ div[data-testid="column"] {
 
 /* Header */
 .header {
-    font-size: 13px;
+    font-size: 15px;
     color: #6b7280;
     text-transform: uppercase;
     letter-spacing: 0.06em;
