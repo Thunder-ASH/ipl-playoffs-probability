@@ -1,154 +1,149 @@
-import sys
-import os
+import streamlit as st
+import pandas as pd
+import sys, os
 
-# MUST come before import
+# FIX IMPORT PATH (must be BEFORE import)
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from sim.simulator import run_simulations
 
-import pandas as pd
-import streamlit as st
 
+# ---------------- UI SETTINGS ----------------
 st.set_page_config(layout="wide")
 
-# ---------- GLOBAL STYLE ----------
 st.markdown("""
 <style>
-
-/* Reddit-like font */
-html, body, [class*="css"] {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-}
-
-/* Reduce page padding */
+/* Reduce top/bottom padding */
 .block-container {
-    padding-top: 0.8rem;
+    padding-top: 1rem;
     padding-bottom: 0rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
 }
 
-/* Kill vertical gaps */
-div[data-testid="stVerticalBlock"] > div {
-    padding-top: 0.05rem !important;
-    padding-bottom: 0.05rem !important;
+/* Smaller row spacing */
+.row {
+    margin-bottom: 6px;
 }
 
-/* Remove column padding */
-div[data-testid="column"] {
-    padding: 0 !important;
-}
-
-/* Reduce row spacing */
-.element-container {
-    margin-bottom: 0.2rem !important;
-}
-
-/* Header */
+/* Header style */
 .header {
+    font-size: 13px;
+    color: #8b949e;
+    font-weight: 500;
+}
+
+/* Team name */
+.team {
     font-size: 15px;
-    color: #6b7280;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 500;
+    font-weight: 600;
 }
 
-/* Data text */
-.metric {
-    font-size: 20px;
-    font-weight: 500;
+/* Points bold */
+.points {
+    font-weight: 700;
+    font-size: 16px;
 }
 
-/* Points highlight */
-.bold {
-    font-weight: 750;
-    font-size: 21px;
+/* Bar background */
+.bar-bg {
+    background: #1f2937;
+    height: 8px;
+    border-radius: 6px;
+    width: 100%;
 }
 
-/* Small text */
-.small {
-    font-size: 17px;
-    color: #9ca3af;
+/* Bar fill */
+.bar-fill {
+    height: 8px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #3b82f6, #22c55e);
 }
 
-/* Divider */
-.divider {
+/* Thin separator */
+.sep {
     border-bottom: 1px solid #1f2937;
-    margin-top: 4px;
-    margin-bottom: 4px;
+    margin: 4px 0;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- TITLE ----------
-st.title("PLAYOFF PROBABILITY")
-st.markdown(
-    "<div class='small' style='margin-bottom:6px;'>As of Apr 28 (RCB v DC)</div>",
-    unsafe_allow_html=True
-)
 
-# ---------- RUN ----------
-teams, top4, top2, points_range = run_simulations()
+# ---------------- TITLE ----------------
+st.title("IPL Playoff Probability")
+st.caption("Monte Carlo Simulation")
 
-# ---------- DATA ----------
+# ---------------- DATA ----------------
+teams, top4, top2, pts_range = run_simulations()
+
+# Convert to dataframe
 data = []
 for t in teams:
     data.append({
         "Team": t,
         "M": teams[t]["played"],
-        "W": teams[t]["won"],
-        "L": teams[t]["lost"],
         "Pts": teams[t]["points"],
         "NRR": teams[t]["nrr"],
-        "Top4": round(top4[t]*100,1),
-        "Top2": round(top2[t]*100,1)
+        "Top4": round(top4[t] * 100, 1),
+        "Top2": round(top2[t] * 100, 1),
+        "Range": pts_range[t]
     })
 
 df = pd.DataFrame(data)
-df = df.sort_values(by=["Pts","NRR"], ascending=False).reset_index(drop=True)
+df = df.sort_values(by=["Pts", "NRR"], ascending=False).reset_index(drop=True)
 
-# ---------- HEADER ----------
-cols = st.columns([0.4,1.4,0.5,0.5,0.5,0.8,1.2,3,3])
-headers = ["#", "Team", "M", "W", "L", "Pts", "NRR", "Top 4", "Top 2"]
+
+# ---------------- HEADER ----------------
+cols = st.columns([0.5, 2.5, 0.7, 0.8, 1.0, 3, 3])
+
+headers = ["#", "TEAM", "M", "PTS", "NRR", "TOP 4", "TOP 2"]
 
 for col, h in zip(cols, headers):
     col.markdown(f"<div class='header'>{h}</div>", unsafe_allow_html=True)
 
-# Thin divider (instead of st.divider)
-st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
+st.markdown("<div class='sep'></div>", unsafe_allow_html=True)
 
-# ---------- ROWS ----------
+
+# ---------------- ROWS ----------------
 for i, row in df.iterrows():
-    cols = st.columns([0.4,1.4,0.5,0.5,0.5,0.8,1.2,3,3])
+    cols = st.columns([0.5, 2.5, 0.7, 0.8, 1.0, 3, 3])
 
-    cols[0].markdown(f"<div class='metric'>{i+1}</div>", unsafe_allow_html=True)
-    cols[1].markdown(f"<div class='metric'>{row['Team']}</div>", unsafe_allow_html=True)
+    # Rank
+    cols[0].write(i + 1)
 
-    cols[2].markdown(f"<div class='metric'>{row['M']}</div>", unsafe_allow_html=True)
-    cols[3].markdown(f"<div class='metric'>{row['W']}</div>", unsafe_allow_html=True)
-    cols[4].markdown(f"<div class='metric'>{row['L']}</div>", unsafe_allow_html=True)
+    # Team
+    cols[1].markdown(f"<div class='team'>{row['Team']}</div>", unsafe_allow_html=True)
 
-    # Points bold
-    cols[5].markdown(f"<div class='metric bold'>{row['Pts']}</div>", unsafe_allow_html=True)
+    # Matches
+    cols[2].write(int(row["M"]))
 
-    # NRR colored
-    nrr_color = "#22c55e" if row["NRR"] > 0 else "#ef4444"
-    cols[6].markdown(
-        f"<div class='metric' style='color:{nrr_color}'>{row['NRR']:.2f}</div>",
+    # Points (bold)
+    cols[3].markdown(f"<div class='points'>{int(row['Pts'])}</div>", unsafe_allow_html=True)
+
+    # NRR
+    nrr_color = "#22c55e" if row["NRR"] >= 0 else "#ef4444"
+    cols[4].markdown(
+        f"<span style='color:{nrr_color}'>{row['NRR']:.2f}</span>",
         unsafe_allow_html=True
     )
 
-    # Top 4 (bar + % inline)
-    with cols[7]:
-        bar, pct = st.columns([4,1])
-        bar.progress(row["Top4"]/100)
-        pct.markdown(f"<div class='small'>{row['Top4']}%</div>", unsafe_allow_html=True)
+    # -------- TOP 4 BAR --------
+    cols[5].markdown(f"""
+    <div style="display:flex;align-items:center;gap:8px;">
+        <div class="bar-bg">
+            <div class="bar-fill" style="width:{row['Top4']}%"></div>
+        </div>
+        <div style="font-size:12px;">{row['Top4']}%</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-    # Top 2
-    with cols[8]:
-        bar, pct = st.columns([4,1])
-        bar.progress(row["Top2"]/100)
-        pct.markdown(f"<div class='small'>{row['Top2']}%</div>", unsafe_allow_html=True)
+    # -------- TOP 2 BAR --------
+    cols[6].markdown(f"""
+    <div style="display:flex;align-items:center;gap:8px;">
+        <div class="bar-bg">
+            <div class="bar-fill" style="width:{row['Top2']}%"></div>
+        </div>
+        <div style="font-size:12px;">{row['Top2']}%</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-    # Thin row divider
-    st.markdown("<div class='divider'></div>", unsafe_allow_html=True)
+    # Separator
+    st.markdown("<div class='sep'></div>", unsafe_allow_html=True)
